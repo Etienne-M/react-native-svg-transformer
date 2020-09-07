@@ -1,4 +1,4 @@
-var semver = require("semver");
+var semverGTE = require("semver/functions/gte");
 var svgr = require("@svgr/core").default;
 var resolveConfig = require("@svgr/core").resolveConfig;
 var resolveConfigDir = require("path-dirname");
@@ -6,17 +6,16 @@ var resolveConfigDir = require("path-dirname");
 var upstreamTransformer = null;
 
 var reactNativeVersionString = require("react-native/package.json").version;
-var reactNativeMinorVersion = semver(reactNativeVersionString).minor;
 
-if (reactNativeMinorVersion >= 59) {
+if (semverGTE(reactNativeVersionString, "0.59.0")) {
   upstreamTransformer = require("metro-react-native-babel-transformer");
-} else if (reactNativeMinorVersion >= 56) {
+} else if (semverGTE(reactNativeVersionString, "0.56.0")) {
   upstreamTransformer = require("metro/src/reactNativeTransformer");
-} else if (reactNativeMinorVersion >= 52) {
+} else if (semverGTE(reactNativeVersionString, "0.52.0")) {
   upstreamTransformer = require("metro/src/transformer");
-} else if (reactNativeMinorVersion >= 47) {
+} else if (semverGTE(reactNativeVersionString, "0.47.0")) {
   upstreamTransformer = require("metro-bundler/src/transformer");
-} else if (reactNativeMinorVersion === 46) {
+} else if (semverGTE(reactNativeVersionString, "0.46.0")) {
   upstreamTransformer = require("metro-bundler/build/transformer");
 } else {
   // handle RN <= 0.45
@@ -67,7 +66,7 @@ var defaultsvgrConfig = {
   }
 };
 
-module.exports.transform = function(src, filename, options) {
+module.exports.transform = function (src, filename, options) {
   if (typeof src === "object") {
     // handle RN >= 0.46
     ({ src, filename, options } = src);
